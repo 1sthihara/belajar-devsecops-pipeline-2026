@@ -1,3 +1,5 @@
+"""Aplikasi Flask untuk login, registrasi, dan endpoint DevSecOps."""
+
 import sqlite3
 from flask import Flask, jsonify, render_template, request
 
@@ -55,31 +57,31 @@ def index():
     )
 
 
-# @app.route("/sentinel/pulse")
-# def sentinel_pulse():
-#     """Menampilkan heartbeat sederhana dari aplikasi Sentinel."""
-#     return jsonify(
-#         {
-#             "service": "Sentinel Flask Application",
-#             "status": "operational",
-#             "environment": "docker",
-#             "pipeline": "github-actions",
-#         }
-#     )
+@app.route("/sentinel/pulse")
+def sentinel_pulse():
+    """Menampilkan heartbeat sederhana dari aplikasi Sentinel."""
+    return jsonify(
+        {
+            "service": "Sentinel Flask Application",
+            "status": "operational",
+            "environment": "docker",
+            "pipeline": "github-actions",
+        }
+    )
 
 
-# @app.route("/deployment-manifest")
-# def deployment_manifest():
-#     """Menampilkan informasi deployment aplikasi."""
-#     return jsonify(
-#         {
-#             "application": "Sentinel Flask",
-#             "version": "PBL-CICD-03",
-#             "container": "secure-flask-app",
-#             "deployment": "automatic",
-#             "pipeline": "GitHub Actions",
-#         }
-#     )
+@app.route("/deployment-manifest")
+def deployment_manifest():
+    """Menampilkan informasi deployment aplikasi."""
+    return jsonify(
+        {
+            "application": "Sentinel Flask",
+            "version": "PBL-CICD-03",
+            "container": "secure-flask-app",
+            "deployment": "automatic",
+            "pipeline": "GitHub Actions",
+        }
+    )
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -94,24 +96,24 @@ def register():
         if username and password:
             conn = sqlite3.connect("users.db")
             cursor = conn.cursor()
-            
+
             # Cek apakah username sudah ada di database
             cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
             existing_user = cursor.fetchone()
-            
+
             if existing_user:
                 message = "Registrasi gagal! Username sudah digunakan."
                 status_class = "danger"
             else:
                 # Insert data pengguna baru menggunakan parameterized query
                 cursor.execute(
-                    "INSERT INTO users (username, password) VALUES (?, ?)", 
+                    "INSERT INTO users (username, password) VALUES (?, ?)",
                     (username, password)
                 )
                 conn.commit()
                 message = "Registrasi Berhasil! Silakan kembali ke halaman login."
                 status_class = "success"
-                
+
             conn.close()
         else:
             message = "Username dan password tidak boleh kosong!"
@@ -130,4 +132,3 @@ def dashboard():
 if __name__ == "__main__":
     init_db()
     app.run(host="0.0.0.0", port=5000)  # nosemgrep
-    
