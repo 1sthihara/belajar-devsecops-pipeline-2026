@@ -1,57 +1,321 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Pengguna</title>
+    <title>Security Documentation - Sentinel</title>
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { text-align: center; color: #333; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.5rem; color: #666; font-weight: bold; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 0.75rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold;}
-        button:hover { background-color: #218838; }
-        
-        /* Styling untuk notifikasi */
-        .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; text-align: center; font-size: 0.9rem; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        
-        .link { display: block; text-align: center; margin-top: 1rem; color: #007bff; text-decoration: none; font-size: 0.9rem;}
-        .link:hover { text-decoration: underline; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .container {
+            width: min(100% - 32px, 950px);
+            margin: auto;
+            padding: 35px 0;
+        }
+
+        .back {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        header {
+            margin: 25px 0;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        header p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f1ff;
+            color: #1d4ed8;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 23px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.15rem;
+            color: #111827;
+        }
+
+        .card p,
+        .card li {
+            color: #6b7280;
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        .card ul {
+            padding-left: 20px;
+        }
+
+        .tool {
+            border-left: 4px solid #2563eb;
+        }
+
+        .tool h3 {
+            margin: 0 0 8px;
+            color: #1e40af;
+            font-size: 1rem;
+        }
+
+        .tool p {
+            margin: 0;
+        }
+
+        .code {
+            display: block;
+            overflow-x: auto;
+            background: #111827;
+            color: #d1fae5;
+            padding: 14px;
+            border-radius: 8px;
+            font-family: Consolas, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .notice {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 9px;
+            padding: 15px;
+            color: #9a3412;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 11px 16px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .navigation a:hover {
+            background: #1d4ed8;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.82rem;
+        }
     </style>
 </head>
+
 <body>
+    <main class="container">
 
-    <div class="container">
-        <h2>Buat Akun Baru</h2>
-        
-        <!-- Menampilkan pesan jika ada -->
-        {% if message %}
-            <div class="alert {{ status_class }}">
-                {{ message }}
-            </div>
-        {% endif %}
+        <a href="/" class="back">
+            ← Kembali ke Sentinel Portal
+        </a>
 
-        <!-- nosemgrep: python.django.security.django-no-csrf-token.django-no-csrf-token -->
-        <form action="/register" method="POST">
-            <div class="form-group">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required placeholder="Masukkan username">
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Masukkan password">
-            </div>
-            <button type="submit">Daftar Sekarang</button>
-        </form>
-        <a href="/" class="link">Kembali ke halaman Login</a>
-    </div>
+        <header>
+            <span class="badge">Security Documentation</span>
 
+            <h1>Application Security</h1>
+
+            <p>
+                Dokumentasi mengenai mekanisme pengujian keamanan,
+                kualitas kode, dependency, dan container pada
+                Sentinel Flask Application.
+            </p>
+        </header>
+
+        <section class="card">
+            <h2>1. Security Overview</h2>
+
+            <p>
+                Sentinel menerapkan pendekatan DevSecOps dengan
+                mengintegrasikan pemeriksaan keamanan ke dalam
+                proses CI/CD.
+            </p>
+
+            <ul>
+                <li>Source code security analysis.</li>
+                <li>Automated code quality checking.</li>
+                <li>Python dependency vulnerability scanning.</li>
+                <li>Docker container vulnerability scanning.</li>
+                <li>Automated deployment melalui GitHub Actions.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>2. Security Testing Tools</h2>
+
+            <div class="tool card">
+                <h3>Semgrep - Static Application Security Testing</h3>
+                <p>
+                    Menganalisis source code untuk mendeteksi
+                    pola kode yang berpotensi menimbulkan
+                    kerentanan keamanan.
+                </p>
+            </div>
+
+            <div class="tool card">
+                <h3>Pylint - Code Quality Analysis</h3>
+                <p>
+                    Memeriksa kualitas, struktur, konsistensi,
+                    dan potensi masalah pada kode Python.
+                    Pipeline menetapkan minimum score 9.0/10.
+                </p>
+            </div>
+
+            <div class="tool card">
+                <h3>pip-audit - Dependency Security</h3>
+                <p>
+                    Memeriksa dependency Python untuk menemukan
+                    kerentanan yang diketahui berdasarkan
+                    informasi vulnerability database.
+                </p>
+            </div>
+
+            <div class="tool card">
+                <h3>Trivy - Container Security</h3>
+                <p>
+                    Memindai Docker image untuk mengidentifikasi
+                    kerentanan pada operating system packages
+                    dan dependency yang terdeteksi.
+                </p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>3. Docker Security Practices</h2>
+
+            <p>
+                Container Sentinel menerapkan beberapa praktik
+                keamanan dasar:
+            </p>
+
+            <ul>
+                <li>Menggunakan Python Slim sebagai base image.</li>
+                <li>Melakukan pembaruan paket sistem operasi.</li>
+                <li>Menggunakan user non-root bernama appuser.</li>
+                <li>Membatasi direktori kerja aplikasi pada /app.</li>
+                <li>Menggunakan Docker untuk isolasi lingkungan aplikasi.</li>
+            </ul>
+
+            <p>Contoh konfigurasi keamanan Docker:</p>
+
+            <code class="code">
+USER appuser
+EXPOSE 5000
+CMD ["python", "app.py"]
+            </code>
+        </section>
+
+        <section class="card">
+            <h2>4. CI/CD Security Workflow</h2>
+
+            <p>
+                Pipeline menjalankan tahapan pemeriksaan
+                sebelum aplikasi dideploy ke target VM.
+            </p>
+
+            <code class="code">
+Git Push
+    |
+    v
+Semgrep SAST
+    |
+    v
+Pylint Code Quality
+    |
+    v
+pip-audit
+    |
+    v
+Docker Build
+    |
+    v
+Trivy Image Scan
+    |
+    v
+Deploy to VM
+            </code>
+        </section>
+
+        <section class="card">
+            <h2>5. Application Configuration</h2>
+
+            <ul>
+                <li>Framework: Python Flask</li>
+                <li>Container: Docker</li>
+                <li>Application Port: 5000</li>
+                <li>Database: Tidak digunakan</li>
+                <li>Authentication: Tidak diimplementasikan</li>
+                <li>CI/CD: GitHub Actions</li>
+                <li>Deployment: Self-hosted Runner</li>
+            </ul>
+
+            <div class="notice">
+                <strong>Security Notice</strong><br>
+                Aplikasi ini merupakan demonstrasi implementasi
+                DevSecOps dan tidak menyediakan autentikasi
+                pengguna. Halaman aplikasi dapat diakses tanpa
+                login. Jangan mengekspos aplikasi ke jaringan
+                publik apabila terdapat informasi sensitif.
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>6. Navigation</h2>
+
+            <div class="navigation">
+                <a href="/">Portal</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/index">Application Index</a>
+            </div>
+        </section>
+
+        <footer>
+            Sentinel Flask Application | DevSecOps Laboratory
+        </footer>
+
+    </main>
 </body>
 </html>
