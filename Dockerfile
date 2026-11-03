@@ -10,7 +10,7 @@ COPY requirements.txt .
 # 2. Upgrade pip dan library dasar Python yang terdeteksi rentan oleh Trivy
 RUN pip install --no-cache-dir --upgrade pip wheel setuptools jaraco.context
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1" wheel msgpack urllib3
 COPY . .
 RUN chown -R appuser:appuser /app
 USER appuser
