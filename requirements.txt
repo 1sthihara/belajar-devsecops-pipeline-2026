@@ -1,1 +1,2 @@
 flask
+setuptool>=78.1.1
